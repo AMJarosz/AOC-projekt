@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Game for Kids</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
+        #drop-area { border: 2px dashed #ccc; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Image Game for Kids</h1>
+    <form id="upload-form" method="POST" enctype="multipart/form-data">
+        <div id="drop-area">
+            <p>Drag & Drop an image here or click to upload.</p>
+            <input type="file" name="image" accept="image/*" required>
+        </div>
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <form method="POST">
+        <button name="delete" value="1">Delete Image</button>
+    </form>
+
+    <form method="POST">
+        <button name="transform" value="1">Transform Image</button>
+    </form>
+
+    <!-- Optionally, show the processed image -->
+    <img src="/images/processed_image.png" alt="Processed Image" style="margin-top:20px;">
+</body>
+</html>
