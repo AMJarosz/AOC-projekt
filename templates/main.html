@@ -41,6 +41,18 @@
         </div>
     {% endif %}
 
+    <!-- Add a button for face-sticker feature -->
+    <form method="POST">
+        <button name="face-sticker" value="1">Add Sticker to Faces</button>
+    </form>
+
+    <!-- Optionally, show the processed image -->
+    {% if processed_image_name %}
+        <h3>Processed Image:</h3>
+        <img src="/images/{{ processed_image_name }}" alt="Processed Image">
+        <a href="/images/{{ processed_image_name }}" download="processed_image.png">Download Image</a>
+    {% endif %}
+
     <!-- Optionally, show the processed image -->
     <img src="/images/processed_image.png" alt="Processed Image" style="margin-top:20px;">
 </body>

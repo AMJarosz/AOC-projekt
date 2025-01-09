@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-from MainScreen import handle_upload, handle_delete, handle_transform
+from MainScreen import handle_upload, handle_delete, handle_transform, handle_face_sticker
 import os
 
 app = Flask(__name__)
@@ -19,6 +19,8 @@ def uploaded_file(filename):
 def main_screen():
     uploaded_image_name = None
     uploaded_image_path = None
+    message = None
+    processed_image_name = None
 
     if request.method == 'POST':
         if 'image' in request.files:
@@ -32,7 +34,13 @@ def main_screen():
 
         elif 'transform' in request.form:
             # Handle image transformation
-            handle_transform(app.config['UPLOAD_FOLDER'], 'resources')
+            handle_transform(app.config['UPLOAD_FOLDER'], 'stickers')
+
+        elif 'face-sticker' in request.form:
+            # Handle face detection and sticker placement
+            processed_image_name, message = handle_face_sticker(
+                app.config['UPLOAD_FOLDER'], 'stickers'
+            )
 
     # Get the uploaded image name (assume the last uploaded image)
     uploaded_files = os.listdir(app.config['UPLOAD_FOLDER'])
@@ -40,7 +48,13 @@ def main_screen():
         uploaded_image_name = uploaded_files[0]  # First uploaded file
         uploaded_image_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_image_name)
 
-    return render_template('main.html', image_name=uploaded_image_name, image_path=uploaded_image_path)
+    return render_template(
+        'main.html',
+        image_name=uploaded_image_name,
+        image_path=uploaded_image_path,
+        message=message,
+        processed_image_name=processed_image_name,
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)
