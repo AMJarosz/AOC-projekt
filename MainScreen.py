@@ -20,25 +20,26 @@ def handle_delete(upload_folder):
 
 
 def handle_transform(upload_folder, resources_folder):
+    # Locate the uploaded image
     uploaded_files = [f for f in os.listdir(upload_folder) if os.path.isfile(os.path.join(upload_folder, f))]
     if not uploaded_files:
-        print("No uploaded image found to transform.")
-        return None
+        return None, "No uploaded image found."
 
     uploaded_file_path = os.path.join(upload_folder, uploaded_files[0])
+    
+    # Open the image
     image = Image.open(uploaded_file_path)
 
-    # Grayscale transformation
-    transformed_image = ImageOps.grayscale(image)
+    # Convert the image to grayscale
+    gray_image = ImageOps.grayscale(image)
 
-    # Save transformed image with a new name
+    # Save the grayscale image
     base, ext = os.path.splitext(uploaded_files[0])
-    transformed_name = f"{base}_transformed{ext}"
+    transformed_name = f"{base}_gray{ext}"
     transformed_image_path = os.path.join(upload_folder, transformed_name)
-    transformed_image.save(transformed_image_path)
+    gray_image.save(transformed_image_path)
 
-    print(f"Image transformed and saved as {transformed_image_path}")
-    return transformed_name
+    return transformed_name, "Image converted to grayscale and saved."
 
 
 def handle_face_sticker(upload_folder, stickers_folder):
@@ -67,15 +68,24 @@ def handle_face_sticker(upload_folder, stickers_folder):
     for face_location in face_locations:
         top, right, bottom, left = face_location
 
-        # Determine where to place the sticker
+        # Calculate face dimensions
+        face_width = right - left
+        face_height = bottom - top
+
+        # Rescale sticker to match the face width
+        aspect_ratio = sticker.height / sticker.width
+        new_width = face_width
+        new_height = int(new_width * aspect_ratio)
+        resized_sticker = sticker.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+        # Determine sticker placement
         face_center_x = (left + right) // 2
-        sticker_width, sticker_height = sticker.size
-        sticker_x = face_center_x - (sticker_width // 2)
-        sticker_y = top - sticker_height - 5  # 5 pixels above the face
+        sticker_x = face_center_x - (new_width // 2)
+        sticker_y = top - new_height - 5  # 5 pixels above the face
 
         # Create a new layer for the sticker
         overlay = Image.new('RGBA', pil_image.size, (255, 255, 255, 0))
-        overlay.paste(sticker, (sticker_x, sticker_y), sticker)
+        overlay.paste(resized_sticker, (sticker_x, sticker_y), resized_sticker)
 
         # Combine the sticker with the original image
         pil_image = Image.alpha_composite(pil_image, overlay)
@@ -85,8 +95,9 @@ def handle_face_sticker(upload_folder, stickers_folder):
 
     # Save the processed image
     base, ext = os.path.splitext(uploaded_files[0])
-    processed_name = f"{base}_with_sticker.jpg"  # Save as JPEG
+    processed_name = f"{base}_with_sticker.jpg"
     processed_path = os.path.join(upload_folder, processed_name)
     pil_image_rgb.save(processed_path, "JPEG")
 
     return processed_name, "Face detected, sticker applied, and image saved."
+
