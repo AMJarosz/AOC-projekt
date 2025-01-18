@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding-top: 80px;
+    text-align: center;
+    background-color: #f9f9f9;
+}
+
+h1 {
+    font-family: 'Press Start 2P', cursive; /* Gamerowa czcionka */
+    color: white; /* Biały tekst */
+    background-color: black; /* Czarne tło */
+    padding: 20px 0; /* Odstęp góra/dół */
+    border-bottom: 2px solid #555; /* Dolna ramka */
+    position: fixed; /* Przyczepiony do górnej części strony */
+    top: 0; /* Pozycja od góry */
+    left: 0; /* Pozycja od lewej */
+    width: 100%; /* Szerokość całego okna */
+    margin: 0;
+    text-align: center; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
+}
+
+
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF; /* Niebieski kolor */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3; /* Ciemniejszy niebieski po najechaniu */
+}
+
+#drop-area {
+    border: 2px dashed #007BFF; /* Niebieska ramka */
+    padding: 40px;
+    border-radius: 15px; /* Zaokrąglone rogi */
+    background-color: #f0f8ff; /* Jasne tło */
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s; /* Płynne przejście */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Delikatny cień */
+}
+
+#drop-area:hover {
+    background-color: #e6f7ff; /* Jaśniejszy odcień przy najechaniu */
+    border-color: #0056b3; /* Ciemniejszy niebieski przy najechaniu */
+}
+
+#drop-area p {
+    font-size: 16px;
+    color: #555; /* Stonowany kolor tekstu */
+    margin: 0;
+    font-weight: bold;
+}
+
+#drop-area input[type="file"] {
+    display: none; /* Ukryj domyślny element input */
+}
+
+#drop-area.dragover {
+    background-color: #d0ebff; /* Podświetlenie podczas przeciągania */
+    border-color: #003d73; /* Bardziej intensywny kolor ramki */
+}

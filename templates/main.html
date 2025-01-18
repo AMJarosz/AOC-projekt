@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Game for Kids</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
-        #drop-area { border: 2px dashed #ccc; padding: 20px; }
-        img { max-width: 100%; height: auto; margin-top: 20px; }
-    </style>
+    <title>Image Game for Kids</title> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <h1>Image Game for Kids</h1>
@@ -55,5 +51,31 @@
 
     <!-- Optionally, show the processed image -->
     <img src="/images/processed_image.png" alt="Processed Image" style="margin-top:20px;">
+
+    <script>
+        const dropArea = document.getElementById('drop-area');
+    
+        dropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropArea.classList.add('dragover');
+        });
+    
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('dragover');
+        });
+    
+        dropArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropArea.classList.remove('dragover');
+    
+            // Automatyczne ustawienie przesłanego pliku
+            const fileInput = dropArea.querySelector('input[type="file"]');
+            fileInput.files = event.dataTransfer.files;
+        });
+    
+        dropArea.addEventListener('click', () => {
+            dropArea.querySelector('input[type="file"]').click();
+        });
+    </script>
 </body>
 </html>
