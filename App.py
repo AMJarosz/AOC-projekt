@@ -15,6 +15,10 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/stickers/<filename>')
+def serve_sticker(filename):
+    return send_from_directory('stickers', filename)
+
 @app.route('/', methods=['GET', 'POST'])
 def main_screen():
     uploaded_image_name = None
@@ -36,10 +40,11 @@ def main_screen():
             # Handle image transformation
             handle_transform(app.config['UPLOAD_FOLDER'], 'stickers')
 
-        elif 'face-sticker' in request.form:
-            # Handle face detection and sticker placement
+        elif 'selected-sticker' in request.form:
+            # Get the selected sticker name
+            selected_sticker = request.form.get('sticker-name')
             processed_image_name, message = handle_face_sticker(
-                app.config['UPLOAD_FOLDER'], 'stickers'
+                app.config['UPLOAD_FOLDER'], 'stickers', selected_sticker
             )
 
     # Get the uploaded image name (assume the last uploaded image)
@@ -48,12 +53,21 @@ def main_screen():
         uploaded_image_name = uploaded_files[0]  # First uploaded file
         uploaded_image_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_image_name)
 
+    # List stickers available in the stickers folder
+    sticker_folder = 'stickers'
+    sticker_files = [
+        sticker for sticker in os.listdir(sticker_folder)
+        if sticker.lower().endswith(('png', 'jpg', 'jpeg'))
+    ]
+
     return render_template(
         'main.html',
         image_name=uploaded_image_name,
         image_path=uploaded_image_path,
         message=message,
         processed_image_name=processed_image_name,
+        stickers=sticker_files,  # Pass sticker files to the template
+        sticker_folder=sticker_folder
     )
 
 if __name__ == '__main__':

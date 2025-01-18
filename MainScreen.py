@@ -42,7 +42,7 @@ def handle_transform(upload_folder, resources_folder):
     return transformed_name, "Image converted to grayscale and saved."
 
 
-def handle_face_sticker(upload_folder, stickers_folder):
+def handle_face_sticker(upload_folder, stickers_folder, selected_sticker):
     uploaded_files = [f for f in os.listdir(upload_folder) if os.path.isfile(os.path.join(upload_folder, f))]
     if not uploaded_files:
         return None, "No uploaded image found."
@@ -54,50 +54,37 @@ def handle_face_sticker(upload_folder, stickers_folder):
     if not face_locations:
         return None, "No face detected in the uploaded image."
 
-    # Load the image and convert it for processing
     pil_image = Image.open(uploaded_file_path).convert("RGBA")
 
-    # Load the sticker
-    sticker_path = os.path.join(stickers_folder, 'sticker.png')
+    # Load the selected sticker
+    sticker_path = os.path.join(stickers_folder, selected_sticker)
     if not os.path.exists(sticker_path):
-        return None, "Sticker resource file not found."
+        return None, "Selected sticker file not found."
 
     sticker = Image.open(sticker_path).convert("RGBA")
 
-    # Process each detected face
     for face_location in face_locations:
         top, right, bottom, left = face_location
-
-        # Calculate face dimensions
         face_width = right - left
-        face_height = bottom - top
-
-        # Rescale sticker to match the face width
         aspect_ratio = sticker.height / sticker.width
         new_width = face_width
         new_height = int(new_width * aspect_ratio)
         resized_sticker = sticker.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
-        # Determine sticker placement
         face_center_x = (left + right) // 2
         sticker_x = face_center_x - (new_width // 2)
-        sticker_y = top - new_height - 5  # 5 pixels above the face
+        sticker_y = top - new_height - 5
 
-        # Create a new layer for the sticker
         overlay = Image.new('RGBA', pil_image.size, (255, 255, 255, 0))
         overlay.paste(resized_sticker, (sticker_x, sticker_y), resized_sticker)
 
-        # Combine the sticker with the original image
         pil_image = Image.alpha_composite(pil_image, overlay)
 
-    # Convert the final image to RGB mode (to remove alpha transparency)
     pil_image_rgb = pil_image.convert("RGB")
-
-    # Save the processed image
     base, ext = os.path.splitext(uploaded_files[0])
     processed_name = f"{base}_with_sticker.jpg"
     processed_path = os.path.join(upload_folder, processed_name)
     pil_image_rgb.save(processed_path, "JPEG")
 
-    return processed_name, "Face detected, sticker applied, and image saved."
+    return processed_name, "Sticker applied and image saved."
 
