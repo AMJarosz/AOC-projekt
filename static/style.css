@@ -23,7 +23,14 @@ h1 {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
 }
 
-
+.resized-image {
+    width: 800px; /* Fixed width for the displayed images */
+    height: 500px; /* Fixed height for the displayed images */
+    object-fit: cover; /* Ensures the image is cropped or padded while maintaining aspect ratio */
+    border: 2px solid #ddd; /* Optional: add a border for styling */
+    border-radius: 10px; /* Optional: rounded corners for a consistent look */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
 
 button {
     margin: 10px;

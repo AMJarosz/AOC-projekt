@@ -30,21 +30,20 @@
                 <button name="transform" value="1">Transform Image</button>
             </form>
 
-            <!-- Display Uploaded Photo -->
-            {% if image_name and image_path %}
-                <div>
-                    <h3>Uploaded Image:</h3>
-                    <p>{{ image_name }}</p>
-                    <img src="{{ image_path }}" alt="Uploaded Photo" style="max-width: 90%; height: auto;">
-                </div>
-            {% endif %}
-
-            <!-- Processed Image Display -->
+            <!-- Display Image (Processed or Uploaded) -->
             {% if processed_image_name %}
                 <div>
                     <h3>Processed Image:</h3>
-                    <img src="/images/{{ processed_image_name }}" alt="Processed Image" style="max-width: 90%; height: auto;">
-                    <a href="/images/{{ processed_image_name }}" download="processed_image.png">Download Processed Image</a>
+                    <img src="/images/{{ processed_image_name }}" alt="Processed Image" class="resized-image">
+                </div>
+                <button>
+                    <a href="/images/{{ processed_image_name }}" download="processed_image.png" style="color: white; text-decoration: none; font-size: 16px;">Download Processed Image </a>
+                </button>
+                
+            {% elif image_name and image_path %}
+                <div>
+                    <h3>Uploaded Image:</h3>
+                    <img src="{{ image_path }}" alt="Uploaded Photo" class="resized-image">
                 </div>
             {% endif %}
         </div>
