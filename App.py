@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from MainScreen import handle_upload, handle_delete, handle_transform, handle_face_sticker
 import os
+# from fer import FER
+# import cv2
+from deepface import DeepFace
+import cv2
+
 
 app = Flask(__name__)
 
@@ -25,12 +30,58 @@ def main_screen():
     uploaded_image_path = None
     message = None
     processed_image_name = None
+    emotion = None
 
     if request.method == 'POST':
         if 'image' in request.files:
             # Handle image upload
             file = request.files['image']
             handle_upload(file, app.config['UPLOAD_FOLDER'])
+
+            uploaded_image_name = file.filename
+            uploaded_image_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_image_name)
+            
+            # Perform emotion recognition
+            image = cv2.imread(uploaded_image_path)
+            if image is not None:
+                try:
+                    result = DeepFace.analyze(image, actions=['emotion'])
+                    
+                    # Handle result being a list of dictionaries
+                    if isinstance(result, list):
+                        result = result[0]  # Take the first face's result
+                        
+                    emotion = result.get('dominant_emotion', None)
+                    
+                    # Display the emotion
+                    if emotion:
+                        message = f"Detected emotion: {emotion.capitalize()}"
+                    else:
+                        message = "No emotion detected."
+                except Exception as e:
+                    message = f"Please upload a photo with a person looking forward"
+            else:
+                message = "No face on uploaded photo"
+
+            # # Perform emotion recognition
+            # image = cv2.imread(uploaded_image_path)
+            # detector = FER(mtcnn=True)
+            # emotion, score = detector.top_emotion(image)
+            # message = f"Emotion detected: {emotion} ({score:.2f})"
+            
+            # # Display the emotion
+            # if emotion:
+            #     message = f"Detected emotion: {emotion.capitalize()}"
+
+            
+            # # Perform emotion recognition
+            # image = cv2.imread(uploaded_image_path)
+            # result = DeepFace.analyze(image, actions=['emotion'])
+            # emotion = result['dominant_emotion']
+            
+            # # Display the emotion
+            # if emotion:
+            #     message = f"Detected emotion: {emotion.capitalize()}"
 
         elif 'delete' in request.form:
             # Handle image deletion
@@ -65,6 +116,7 @@ def main_screen():
         image_name=uploaded_image_name,
         image_path=uploaded_image_path,
         message=message,
+        emotion=emotion,
         processed_image_name=processed_image_name,
         stickers=sticker_files,  # Pass sticker files to the template
         sticker_folder=sticker_folder

@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding-top: 80px;
     text-align: center;
-    background-color: #f9f9f9;
+    background-image: url('/static/background.jpg');
 }
 
 h1 {
@@ -78,3 +78,4 @@ button:hover {
     background-color: #d0ebff; /* Podświetlenie podczas przeciągania */
     border-color: #003d73; /* Bardziej intensywny kolor ramki */
 }
+

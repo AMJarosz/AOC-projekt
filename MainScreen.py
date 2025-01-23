@@ -86,5 +86,5 @@ def handle_face_sticker(upload_folder, stickers_folder, selected_sticker):
     processed_path = os.path.join(upload_folder, processed_name)
     pil_image_rgb.save(processed_path, "JPEG")
 
-    return processed_name, "Sticker applied and image saved."
+    return processed_name, "Now you can download your photo!"
 

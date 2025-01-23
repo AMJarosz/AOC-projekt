@@ -46,17 +46,20 @@
                     <img src="{{ image_path }}" alt="Uploaded Photo" class="resized-image">
                 </div>
             {% endif %}
+            {% if message %}
+            <h2>{{ message }}</h2>
+            {% endif %}
         </div>
 
         <!-- Stickers Section -->
-        <div style="flex: 1; overflow-y: auto; padding: 20px; border-left: 2px solid #ddd; background-color: #f9f9f9;">
+        <div style="flex: 0.5; overflow-y: auto; padding: 5px; border-left: 0px solid #f8ecec;">
             <h3>Available Stickers</h3>
             {% for sticker in stickers %}
                 <div style="margin-bottom: 20px; text-align: center;">
                     <img src="/{{ sticker_folder }}/{{ sticker }}" alt="{{ sticker }}" 
                          style="width: 80%; max-width: 120px; border: 1px solid #ccc; border-radius: 5px;">
                     <form method="POST" style="margin-top: 5px;">
-                        <input type="hidden" name="sticker-name" value="{{ sticker }}">
+                        <input type="hidden" name="sticker-name" value="{{ sticker }}";>
                         <button name="selected-sticker" value="1" style="margin-top: 5px;">Use Sticker</button>
                     </form>
                 </div>
