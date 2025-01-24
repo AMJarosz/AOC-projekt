@@ -63,26 +63,6 @@ def main_screen():
             else:
                 message = "No face on uploaded photo"
 
-            # # Perform emotion recognition
-            # image = cv2.imread(uploaded_image_path)
-            # detector = FER(mtcnn=True)
-            # emotion, score = detector.top_emotion(image)
-            # message = f"Emotion detected: {emotion} ({score:.2f})"
-            
-            # # Display the emotion
-            # if emotion:
-            #     message = f"Detected emotion: {emotion.capitalize()}"
-
-            
-            # # Perform emotion recognition
-            # image = cv2.imread(uploaded_image_path)
-            # result = DeepFace.analyze(image, actions=['emotion'])
-            # emotion = result['dominant_emotion']
-            
-            # # Display the emotion
-            # if emotion:
-            #     message = f"Detected emotion: {emotion.capitalize()}"
-
         elif 'delete' in request.form:
             # Handle image deletion
             handle_delete(app.config['UPLOAD_FOLDER'])
