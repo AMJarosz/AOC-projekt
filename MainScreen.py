@@ -121,7 +121,7 @@ def handle_sad_sticker(upload_folder, stickers_folder, selected_sticker):
 
         # Resize the sticker to match the face dimensions
         aspect_ratio = sticker.height / sticker.width
-        new_width = face_width
+        new_width = face_width - 20
         new_height = int(new_width * aspect_ratio)
         resized_sticker = sticker.resize((new_width, new_height), Image.Resampling.LANCZOS)
 

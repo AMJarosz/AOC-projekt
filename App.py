@@ -84,7 +84,7 @@ def main_screen():
 
             # Determine the appropriate sticker folder based on the detected emotion
             sticker_folder = 'stickers'
-            if emotion == 'sad':
+            if emotion == 'sad' or emotion == 'angry' or emotion == 'neutral':
                 sticker_folder = 'sad_stickers'
                 processed_image_name, message = handle_sad_sticker(
                 app.config['UPLOAD_FOLDER'], sticker_folder, selected_sticker
@@ -103,7 +103,7 @@ def main_screen():
 
     # Determine the appropriate sticker folder based on the detected emotion
     sticker_folder = 'stickers'
-    if emotion == 'sad':
+    if emotion == 'sad' or emotion == 'angry' or emotion == 'neutral':
         sticker_folder ='sad_stickers'
 
     # Ensure the folder exists and list stickers
