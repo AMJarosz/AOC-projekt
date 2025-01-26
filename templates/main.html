@@ -64,6 +64,17 @@
                     </form>
                 </div>
             {% endfor %}
+            {% for sticker in sad_stickers %}
+            SAD
+            <div style="margin-bottom: 20px; text-align: center;">
+                <img src="/{{ sticker_folder }}/{{ sticker }}" alt="{{ sticker }}" 
+                     style="width: 80%; max-width: 120px; border: 1px solid #ccc; border-radius: 5px;">
+                <form method="POST" style="margin-top: 5px;">
+                    <input type="hidden" name="sticker-name" value="{{ sticker }}";>
+                    <button name="selected-sticker" value="1" style="margin-top: 5px;">Use Sticker</button>
+                </form>
+            </div>
+        {% endfor %}
         </div>
     </div>
 

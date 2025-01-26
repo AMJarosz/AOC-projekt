@@ -24,6 +24,11 @@ def uploaded_file(filename):
 def serve_sticker(filename):
     return send_from_directory('stickers', filename)
 
+@app.route('/sad_stickers/<filename>')
+def serve_sad_sticker(filename):
+    return send_from_directory('sad_stickers', filename)
+
+
 @app.route('/', methods=['GET', 'POST'])
 def main_screen():
     uploaded_image_name = None
@@ -66,6 +71,7 @@ def main_screen():
         elif 'delete' in request.form:
             # Handle image deletion
             handle_delete(app.config['UPLOAD_FOLDER'])
+            emotion = None  # Reset emotion when image is deleted
 
         elif 'transform' in request.form:
             # Handle image transformation
@@ -74,8 +80,15 @@ def main_screen():
         elif 'selected-sticker' in request.form:
             # Get the selected sticker name
             selected_sticker = request.form.get('sticker-name')
+
+            # Determine the appropriate sticker folder based on the detected emotion
+            sticker_folder = 'stickers'
+            if emotion == 'sad':
+                sticker_folder = 'sad_stickers'
+
+            # Process the selected sticker
             processed_image_name, message = handle_face_sticker(
-                app.config['UPLOAD_FOLDER'], 'stickers', selected_sticker
+                app.config['UPLOAD_FOLDER'], sticker_folder, selected_sticker
             )
 
     # Get the uploaded image name (assume the last uploaded image)
@@ -84,8 +97,13 @@ def main_screen():
         uploaded_image_name = uploaded_files[0]  # First uploaded file
         uploaded_image_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_image_name)
 
-    # List stickers available in the stickers folder
+    # Determine the appropriate sticker folder based on the detected emotion
     sticker_folder = 'stickers'
+    if emotion == 'sad':
+        sticker_folder ='sad_stickers'
+
+    # Ensure the folder exists and list stickers
+    os.makedirs(sticker_folder, exist_ok=True)
     sticker_files = [
         sticker for sticker in os.listdir(sticker_folder)
         if sticker.lower().endswith(('png', 'jpg', 'jpeg'))
@@ -101,6 +119,7 @@ def main_screen():
         stickers=sticker_files,  # Pass sticker files to the template
         sticker_folder=sticker_folder
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True)
