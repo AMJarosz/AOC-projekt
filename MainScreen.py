@@ -59,6 +59,54 @@ def handle_face_sticker(upload_folder, stickers_folder, selected_sticker):
     # Load the selected sticker
     sticker_path = os.path.join(stickers_folder, selected_sticker)
     if not os.path.exists(sticker_path):
+        print(sticker_path)
+        return None, "Selected sticker file not found123. "
+
+    sticker = Image.open(sticker_path).convert("RGBA")
+
+    for face_location in face_locations:
+        top, right, bottom, left = face_location
+        face_width = right - left
+        aspect_ratio = sticker.height / sticker.width
+        new_width = face_width
+        new_height = int(new_width * aspect_ratio)
+        resized_sticker = sticker.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+        face_center_x = (left + right) // 2
+        sticker_x = face_center_x - (new_width // 2)
+        sticker_y = top - new_height - 5
+
+        overlay = Image.new('RGBA', pil_image.size, (255, 255, 255, 0))
+        overlay.paste(resized_sticker, (sticker_x, sticker_y), resized_sticker)
+
+        pil_image = Image.alpha_composite(pil_image, overlay)
+
+    pil_image_rgb = pil_image.convert("RGB")
+    base, ext = os.path.splitext(uploaded_files[0])
+    processed_name = f"{base}_with_sticker.jpg"
+    processed_path = os.path.join(upload_folder, processed_name)
+    pil_image_rgb.save(processed_path, "JPEG")
+
+    return processed_name, "Now you can download your photo!"
+
+def handle_sad_face_sticker(upload_folder, sad_stickers_folder, selected_sticker):
+    uploaded_files = [f for f in os.listdir(upload_folder) if os.path.isfile(os.path.join(upload_folder, f))]
+    if not uploaded_files:
+        return None, "No uploaded image found."
+
+    uploaded_file_path = os.path.join(upload_folder, uploaded_files[0])
+    image = face_recognition.load_image_file(uploaded_file_path)
+    face_locations = face_recognition.face_locations(image)
+
+    if not face_locations:
+        return None, "No face detected in the uploaded image."
+
+    pil_image = Image.open(uploaded_file_path).convert("RGBA")
+
+    # Load the selected sticker
+    sticker_path = os.path.join(sad_stickers_folder, selected_sticker)
+    if not os.path.exists(sticker_path):
+        print(sad_stickers_folder)
         return None, "Selected sticker file not found."
 
     sticker = Image.open(sticker_path).convert("RGBA")
