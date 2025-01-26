@@ -57,9 +57,10 @@
             {% for sticker in stickers %}
                 <div style="margin-bottom: 20px; text-align: center;">
                     <img src="/{{ sticker_folder }}/{{ sticker }}" alt="{{ sticker }}" 
-                         style="width: 80%; max-width: 120px; border: 1px solid #ccc; border-radius: 5px;">
+                         style="width: 80%; max-width: 120px;">
                     <form method="POST" style="margin-top: 5px;">
                         <input type="hidden" name="sticker-name" value="{{ sticker }}";>
+                        <input type="hidden" name="detected-emotion" value="{{ emotion }}">
                         <button name="selected-sticker" value="1" style="margin-top: 5px;">Use Sticker</button>
                     </form>
                 </div>
@@ -68,9 +69,10 @@
             SAD
             <div style="margin-bottom: 20px; text-align: center;">
                 <img src="/{{ sticker_folder }}/{{ sticker }}" alt="{{ sticker }}" 
-                     style="width: 80%; max-width: 120px; border: 1px solid #ccc; border-radius: 5px;">
+                     style="width: 80%; max-width: 120px;">
                 <form method="POST" style="margin-top: 5px;">
                     <input type="hidden" name="sticker-name" value="{{ sticker }}";>
+                    <input type="hidden" name="detected-emotion" value="{{ emotion }}">
                     <button name="selected-sticker" value="1" style="margin-top: 5px;">Use Sticker</button>
                 </form>
             </div>

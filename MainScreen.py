@@ -88,3 +88,59 @@ def handle_face_sticker(upload_folder, stickers_folder, selected_sticker):
 
     return processed_name, "Now you can download your photo!"
 
+
+def handle_sad_sticker(upload_folder, stickers_folder, selected_sticker):
+    uploaded_files = [f for f in os.listdir(upload_folder) if os.path.isfile(os.path.join(upload_folder, f))]
+    if not uploaded_files:
+        return None, "No uploaded image found."
+
+    uploaded_file_path = os.path.join(upload_folder, uploaded_files[0])
+    image = face_recognition.load_image_file(uploaded_file_path)
+    face_locations = face_recognition.face_locations(image)
+
+    if not face_locations:
+        return None, "No face detected in the uploaded image."
+
+    pil_image = Image.open(uploaded_file_path).convert("RGBA")
+
+    # Load the selected sticker
+    sticker_path = os.path.join(stickers_folder, selected_sticker)
+    if not os.path.exists(sticker_path):
+        return None, "Selected sticker file not found."
+
+    sticker = Image.open(sticker_path).convert("RGBA")
+
+    for face_location in face_locations:
+        top, right, bottom, left = face_location
+        face_width = right - left
+        face_height = bottom - top
+
+        # Center coordinates of the face
+        face_center_x = (left + right) // 2
+        face_center_y = (top + bottom) // 2
+
+        # Resize the sticker to match the face dimensions
+        aspect_ratio = sticker.height / sticker.width
+        new_width = face_width
+        new_height = int(new_width * aspect_ratio)
+        resized_sticker = sticker.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+        # Calculate the position to place the sticker at the center of the face
+        sticker_x = face_center_x - (new_width // 2)
+        sticker_y = face_center_y - (new_height // 8)
+
+        # Create an overlay for the sticker
+        overlay = Image.new('RGBA', pil_image.size, (255, 255, 255, 0))
+        overlay.paste(resized_sticker, (sticker_x, sticker_y), resized_sticker)
+
+        # Combine the sticker with the original image
+        pil_image = Image.alpha_composite(pil_image, overlay)
+
+    # Save the final image
+    pil_image_rgb = pil_image.convert("RGB")
+    base, ext = os.path.splitext(uploaded_files[0])
+    processed_name = f"{base}_with_sticker.jpg"
+    processed_path = os.path.join(upload_folder, processed_name)
+    pil_image_rgb.save(processed_path, "JPEG")
+
+    return processed_name, "Now you can download your photo!"

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-from MainScreen import handle_upload, handle_delete, handle_transform, handle_face_sticker
+from MainScreen import handle_upload, handle_delete, handle_transform, handle_face_sticker, handle_sad_sticker
 import os
 # from fer import FER
 # import cv2
@@ -80,16 +80,20 @@ def main_screen():
         elif 'selected-sticker' in request.form:
             # Get the selected sticker name
             selected_sticker = request.form.get('sticker-name')
+            emotion = request.form.get('detected-emotion')
 
             # Determine the appropriate sticker folder based on the detected emotion
             sticker_folder = 'stickers'
             if emotion == 'sad':
                 sticker_folder = 'sad_stickers'
-
-            # Process the selected sticker
-            processed_image_name, message = handle_face_sticker(
+                processed_image_name, message = handle_sad_sticker(
                 app.config['UPLOAD_FOLDER'], sticker_folder, selected_sticker
-            )
+                )
+            else:    
+                # Process the selected sticker
+                processed_image_name, message = handle_face_sticker(
+                    app.config['UPLOAD_FOLDER'], sticker_folder, selected_sticker
+                )
 
     # Get the uploaded image name (assume the last uploaded image)
     uploaded_files = os.listdir(app.config['UPLOAD_FOLDER'])
